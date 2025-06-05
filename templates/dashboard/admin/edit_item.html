@@ -1,0 +1,89 @@
+
+{% extends "dashboard/base.html" %}
+{% load crispy_forms_tags %}
+{% block dashboard_content %}
+  <div class="card-header text-center">
+        <h1>Редактировать</h1>
+  </div>
+<div class="container mt-4">
+    <div class="card p-4 shadow-sm">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+             {{ form.media }}
+            <div class="mb-3">
+                <label for="{{ form.name.id_for_label }}" class="form-label">name</label>
+                {{ form.name }}
+            </div>
+            <div class="mb-3">
+                <label for="{{ form.category.id_for_label }}" class="form-label">category</label>
+                <div class="input-group">
+
+                    {{ form.category}}
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="{{ form.price.id_for_label }}" class="form-label">price</label>
+                <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    {{ form.price }}
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="{{ form.wholesale_qty.id_for_label }}" class="form-label">wholesale qty</label>
+                <div class="input-group">
+<!--                    <span class="input-group-text">$</span>-->
+                    {{ form.wholesale_qty }}
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="{{ form.discount_percentage.id_for_label }}" class="form-label">discount percentage</label>
+                <div class="input-group">
+                    <span class="input-group-text">%</span>
+                    {{ form.discount_percentage }}
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="{{ form.body.id_for_label }}" class="form-label">Description</label>
+                {{ form.body }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Tags</label>
+                {{ form.tags }}
+            </div>
+            <div class="mb-3">
+                <label for="{{ form.image.id_for_label }}" class="form-label">item image</label>
+                {{ form.image }}
+                {% if item.image %}
+                    <div class="mt-2">
+                        <img src="{{ item.image.url }}" class="img-thumbnail" alt="{{ item.name }}" style="max-width: 150px;">
+                    </div>
+                {% endif %}
+            </div>
+            <div class="mb-3">
+
+                <label for="id_additional_images">Upload additional images:</label>
+                <input type="file" name="additional_images" id="id_additional_images" multiple>
+            </div>
+
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">сохранить изменения</button>
+                <a href="{% url 'home' %}" class="btn btn-secondary">Отменить</a>
+            </div>
+        </form>
+        {% if item.images.all %}
+                <h4 class="mt-4">Existing Additional Images:</h4>
+                <div class="row">
+                    {% for img in item.images.all %}
+                        <div class="col-6 col-md-3 mb-3">
+                            <img src="{{ img.image.url }}" class="img-fluid rounded border" style="object-fit: cover; width: 100%; height: 150px;">
+                        </div>
+                    {% endfor %}
+                </div>
+        {% endif %}
+    </div>
+</div>
+
+
+
+{% endblock %}
