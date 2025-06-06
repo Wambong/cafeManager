@@ -9,9 +9,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = "django-insecure-a3c%bg-87&b-ny8gx8+&50++jy#d42l*hvumv&p0i+js@j3$mq"
 
 
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'europashisha.store',
+    'europashisha.com',
+    'europashisha.club',
+    '127.0.0.1'
+]
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
 LOGIN_URL = 'login'
