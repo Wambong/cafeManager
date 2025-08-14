@@ -144,6 +144,7 @@ td {
 /* image field */
 
 .image-fit {
+    display: block;
     position: absolute;
     top: 0;
     left: 0;
