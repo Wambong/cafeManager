@@ -4,14 +4,33 @@
 
 <div class="container mt-4">
     <div class="card mb-4">
-{% if item.image %}
-<div class="w-100 d-flex justify-content-center mb-3">
-    <div style="position: relative; width: 100%; max-width: 600px; aspect-ratio: 3 / 2; border-radius: 25px; overflow: hidden;">
-        <img src="{{ item.image.url }}"
+<div {% if item.image %}
+<div class="zoom-wrapper position-relative w-100 d-flex justify-content-center mb-3" style="z-index: 1;">
+    <div style="position: relative; width: 100%; max-width: 600px; aspect-ratio: 3 / 2; border-radius: 5px; overflow: hidden;">
+        <img id="product-image" src="{{ item.image.url }}"
              alt="{{ item.name }}"
              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-                    object-fit: contain; border-radius: 25px;">
+                    object-fit: contain; border-radius: 5px; cursor: zoom-in;">
     </div>
+
+    <!-- Zoom preview (will float above) -->
+    <div id="zoom-preview" style="
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        border: 2px solid #ddd;
+        border-radius: 5px;
+        background-repeat: no-repeat;
+        background-color: white;
+        box-shadow: 0 0 20px rgba(0,0,0,0.2);
+        display: none;
+        z-index: 1000;
+        pointer-events: none;
+        overflow: hidden;
+        top: -320px; /* Above the image container */
+        left: 70%;
+        transform: translateX(-90%);
+    "></div>
 </div>
 {% endif %}
         <div class="card-body">
@@ -52,7 +71,10 @@
                                    <svg class="cartIcon" viewBox="0 0 576 512"><path d="M0 24C0 10.7 10.7 0 24 0H69.5c22 0 41.5 12.8 50.6 32h411c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3H170.7l5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5H488c13.3 0 24 10.7 24 24s-10.7 24-24 24H199.7c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5H24C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"></path></svg>
                                 </button>
                             {% endif %}
-              <a href="{% url 'edit_item' item.id %}" class="btn btn-primary">Update item</a>
+             {% if request.user.is_superuser or request.user.is_staff %}
+                <a href="{% url 'edit_item' item.id %}" class="btn btn-primary">Update item</a>
+            {% endif %}
+
             </div>
 
         </div>
@@ -103,7 +125,7 @@
 					Review:
 					<textarea name="review" rows="4" class="form-control"></textarea>
 					<br>
-                    <input type="submit" value="Отправлять отзывы" class="btn btn-primary">
+                    <input type="submit" value="Send review" class="btn btn-primary">
 
 
 				</div>
@@ -231,4 +253,64 @@
 </div>
 {% endif %}
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const img = document.getElementById('product-image');
+    const preview = document.getElementById('zoom-preview');
+
+    if (img && preview) {
+        // Preload image
+        const hiResImg = new Image();
+        hiResImg.src = img.src;
+
+        // Calculate zoom factor (2x zoom)
+        const zoomFactor = 2;
+
+    img.addEventListener('mousemove', function(e) {
+    if (!hiResImg.complete) return;
+
+    preview.style.display = 'block';
+
+    const imgRect = img.getBoundingClientRect();
+    const containerRect = img.parentElement.getBoundingClientRect();
+    const previewWidth = 300;
+    const previewHeight = 300;
+
+    const x = e.clientX - imgRect.left;
+    const y = e.clientY - imgRect.top;
+
+    const srcX = (x / imgRect.width) * hiResImg.naturalWidth;
+    const srcY = (y / imgRect.height) * hiResImg.naturalHeight;
+
+    // Decide whether to place the preview on the right or left based on viewport space
+    const spaceRight = window.innerWidth - containerRect.right;
+    const spaceLeft = containerRect.left;
+
+    let previewLeft;
+    if (spaceRight > previewWidth + 20) {
+        // Enough space on the right
+        previewLeft = containerRect.right + 20;
+    } else if (spaceLeft > previewWidth + 20) {
+        // Place to the left of the image
+        previewLeft = containerRect.left - previewWidth - 20;
+    } else {
+        // Default fallback: place it below the image
+        previewLeft = containerRect.left;
+        preview.style.top = (containerRect.bottom + 10) + 'px';
+    }
+
+    preview.style.left = `${previewLeft}px`;
+    preview.style.top = (window.scrollY + e.clientY - previewHeight / 2) + 'px';
+
+    preview.style.backgroundImage = `url('${hiResImg.src}')`;
+    preview.style.backgroundSize = `${hiResImg.naturalWidth * zoomFactor}px ${hiResImg.naturalHeight * zoomFactor}px`;
+    preview.style.backgroundPosition = `-${srcX * zoomFactor - previewWidth / 2}px -${srcY * zoomFactor - previewHeight / 2}px`;
+});
+
+        img.addEventListener('mouseleave', function() {
+            preview.style.display = 'none';
+        });
+    }
+});
+</script>
 {% endblock %}

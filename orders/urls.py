@@ -7,9 +7,11 @@ router = DefaultRouter()
 # router.register(r'orders', views.OrderViewSet)
 urlpatterns = [
     path('', views.home, name='home'),
+    path('index/', views.index, name='index'),
     # path('add_item/', views.add_item, name='add_item'),
     path('edit_item/<int:item_id>/', views.edit_item, name='edit_item'),
     path('item/<int:item_id>/', views.item_detail, name='item_detail'),
+    path('product/<int:item_id>/', views.product_detail, name='product_detail'),
 
     path('api/', include(router.urls)),
     path('cart/', views.cart_view, name='cart'),

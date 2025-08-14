@@ -24,7 +24,37 @@ from django.db.models import F
 def home(request):
     items = Item.objects.all()
     return render(request, 'orders/home.html', {'items': items})
+def index(request):
+    items = Item.objects.all()
+    return render(request, 'orders/index.html', {'items': items})
+def product_detail(request, item_id):
+    item = get_object_or_404(Item, pk=item_id)
+    item_tags = item.tags.all()
+    reviews = ReviewRating.objects.filter(pk=item_id, status=True)
+    # Find related items that share any of these tags, excluding the current item
+    related_items = Item.objects.filter(tags__in=item_tags).exclude(id=item.id).distinct()[:8]
+    context = {
+        'reviews': reviews,
+        'item': item,
+        'related_items': related_items,
+    }
 
+    return render(request, 'orders/product-detail.html', context)
+
+
+def item_detail(request, item_id):
+    item = get_object_or_404(Item, pk=item_id)
+    item_tags = item.tags.all()
+    reviews = ReviewRating.objects.filter(pk=item_id, status=True)
+    # Find related items that share any of these tags, excluding the current item
+    related_items = Item.objects.filter(tags__in=item_tags).exclude(id=item.id).distinct()[:8]
+    context =  {
+        'reviews': reviews,
+        'item': item,
+        'related_items': related_items,
+    }
+
+    return render(request, 'orders/item_detail.html', context)
 def add_item(request):
     if request.method == 'POST':
         form = ItemForm(request.POST, request.FILES)
@@ -61,19 +91,7 @@ def edit_item(request, item_id):
     return render(request, 'dashboard/admin/edit_item.html', {'form': form, 'item': item})
 
 
-def item_detail(request, item_id):
-    item = get_object_or_404(Item, pk=item_id)
-    item_tags = item.tags.all()
-    reviews = ReviewRating.objects.filter(pk=item_id, status=True)
-    # Find related items that share any of these tags, excluding the current item
-    related_items = Item.objects.filter(tags__in=item_tags).exclude(id=item.id).distinct()[:8]
-    context =  {
-        'reviews': reviews,
-        'item': item,
-        'related_items': related_items,
-    }
 
-    return render(request, 'orders/item_detail.html', context)
 
 def get_or_create_cart(request):
     if request.user.is_authenticated:
