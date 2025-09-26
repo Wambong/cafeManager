@@ -21,7 +21,7 @@ class Tag(models.Model):
         return self.name
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    slug = models.SlugField(max_length=120, unique=True)
+    slug = models.SlugField(max_length=120, unique=True, editable=False)  # not editable
     parent = models.ForeignKey(
         'self',
         on_delete=models.CASCADE,
@@ -44,16 +44,17 @@ class Category(models.Model):
         return ' > '.join(full_path[::-1])
 
     def save(self, *args, **kwargs):
-        # Auto-generate slug if not set
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
+
 class Item(models.Model):
     name = models.CharField(max_length=100)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     wholesale_qty = models.PositiveIntegerField(default=0, help_text="Minimum quantity for wholesale discount")
     discount_percentage = models.DecimalField(max_digits=5, decimal_places=2, default=0.0, help_text="Wholesale discount percentage")
     stock = models.PositiveIntegerField(default=10, help_text="Available stock")
+    brand = models.CharField(max_length= 250, blank=True, null=True)
     body = RichTextUploadingField(null=True, blank=True)
     image = models.ImageField(upload_to='item_images/', blank=True, null=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='items')
@@ -82,6 +83,15 @@ class Item(models.Model):
         if reviews['count'] is not None:
             count = int(reviews['count'])
         return count
+
+class ItemImage(models.Model):
+    item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name="images")
+    image = models.ImageField(upload_to="items/extra/")
+
+    def __str__(self):
+        return f"Image for {self.item.name}"
+
+
 class ReviewRating(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
@@ -96,13 +106,6 @@ class ReviewRating(models.Model):
 
     def __str__(self):
         return self.subject
-
-class ItemImage(models.Model):
-    item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to='item_images/extra/')
-
-    def __str__(self):
-        return f"Image for {self.item.name}"
 
 
 class Cart(models.Model):

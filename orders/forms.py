@@ -12,32 +12,41 @@ User = get_user_model()
 
 class ItemForm(forms.ModelForm):
     body = forms.CharField(widget=CKEditorUploadingWidget(), required=False)
+
     class Meta:
         model = Item
-        fields = ['name', "category", "body", 'price', 'wholesale_qty', 'discount_percentage', 'image', "tags"]
+        fields = [
+            'name', "category", "body", "brand", 'price', "stock",
+            'wholesale_qty', 'discount_percentage', 'image', "tags"
+        ]
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'category': forms.Select(attrs={'class': 'form-control'}),
-            'body': forms.TextInput(attrs={'class': 'form-control'}),
+            'brand': forms.TextInput(attrs={'class': 'form-control'}),
             'price': forms.NumberInput(attrs={'class': 'form-control'}),
+            'stock': forms.NumberInput(attrs={'class': 'form-control'}),
             'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
             'tags': forms.CheckboxSelectMultiple(),
             'wholesale_qty': forms.NumberInput(attrs={'class': 'form-control'}),
             'discount_percentage': forms.NumberInput(attrs={'class': 'form-control'}),
         }
 
-# class CheckoutForm(forms.Form):
-#     name = forms.CharField(max_length=100)
-#     email = forms.EmailField()
-#     phone = forms.CharField(max_length=20)
-#     address = forms.CharField(widget=forms.Textarea)
-#     country = forms.CharField(max_length=255)
-#     state = forms.CharField(max_length=255)
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self.helper = FormHelper()
-#         self.helper.form_method = 'post'
-#         self.helper.add_input(Submit('submit', 'Submit Order'))
+
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ['name', 'parent']
+
+class TagForm(forms.ModelForm):
+    class Meta:
+        model = Tag
+        fields = ['name', 'slug']
+
+
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ['name', 'parent']
 class CheckoutForm(forms.Form):
     name = forms.CharField(
         max_length=100,
@@ -75,10 +84,6 @@ class ReviewForm(forms.ModelForm):
 
 
 
-class CategoryForm(forms.ModelForm):
-    class Meta:
-        model = Category
-        fields = ['name', 'slug', 'parent']
 
 class TagForm(forms.ModelForm):
     class Meta:

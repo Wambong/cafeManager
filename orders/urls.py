@@ -10,6 +10,7 @@ urlpatterns = [
     path('index/', views.index, name='index'),
     # path('add_item/', views.add_item, name='add_item'),
     path('edit_item/<int:item_id>/', views.edit_item, name='edit_item'),
+    path("item/image/<int:image_id>/delete/", views.delete_item_image, name="delete_item_image"),
     path('item/<int:item_id>/', views.item_detail, name='item_detail'),
     path('product/<int:item_id>/', views.product_detail, name='product_detail'),
 
@@ -32,6 +33,8 @@ urlpatterns = [
     path('dashboard/admin/categories/', views.category_management, name='category_management'),
     path('dashboard/admin/tags/', views.tag_management, name='tag_management'),
     path('dashboard/admin/add-category/', views.add_category, name='add_category'),
+    path('categories/<int:pk>/edit/', views.edit_category, name='edit_category'),
+    path('categories/<int:pk>/delete/', views.delete_category, name='delete_category'),
     path('dashboard/admin/add-tag/', views.add_tag, name='add_tag'),
     path('dashboard/admin/add_item/', views.add_item, name='add_item'),
     path('order/<int:order_id>/invoice/', views.download_invoice, name='download_invoice'),

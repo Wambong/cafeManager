@@ -21,6 +21,8 @@ User = get_user_model()
 from django.db import transaction
 from django.db.models import F
 
+def admin_check(user):
+    return user.is_staff
 def home(request):
     items = Item.objects.all()
     return render(request, 'orders/home.html', {'items': items})
@@ -64,11 +66,23 @@ def add_item(request):
             item = form.save()
             for img in additional_images:
                 ItemImage.objects.create(item=item, image=img)
-            return redirect('home')
+            return redirect('add_item')
     else:
         form = ItemForm()
     return render(request, 'dashboard/admin/add_item.html', {'form': form})
 
+@login_required
+@user_passes_test(admin_check)
+def add_category(request):
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Category added successfully.')
+            return redirect('add_category')  # or use a list view like 'view_all_categories'
+    else:
+        form = CategoryForm()
+    return render(request, 'dashboard/admin/add_category.html', {'form': form})
 
 def edit_item(request, item_id):
     item = get_object_or_404(Item, id=item_id)
@@ -78,13 +92,17 @@ def edit_item(request, item_id):
         additional_images = request.FILES.getlist('additional_images')
 
         if form.is_valid():
-            form.save()
+            item = form.save()  # saves instance
 
-            # Save new additional images
             for img in additional_images:
                 ItemImage.objects.create(item=item, image=img)
 
+            messages.success(request, "Item updated successfully.")
             return redirect('home')
+        else:
+            # 👇 print errors in console AND show them in template
+            print("Form errors:", form.errors)
+            messages.error(request, f"Fix errors before saving: {form.errors}")
     else:
         form = ItemForm(instance=item)
 
@@ -92,6 +110,13 @@ def edit_item(request, item_id):
 
 
 
+@login_required
+def delete_item_image(request, image_id):
+    image = get_object_or_404(ItemImage, id=image_id)
+    item_id = image.item.id
+    image.delete()
+    messages.success(request, "Image deleted successfully.")
+    return redirect("edit_item", item_id=item_id)
 
 def get_or_create_cart(request):
     if request.user.is_authenticated:
@@ -373,8 +398,7 @@ def order_detail(request, order_id):
         order = get_object_or_404(CustomerOrder, id=order_id, user=request.user)
     return render(request, 'dashboard/order_detail.html', {'order': order})
 # Admin views
-def admin_check(user):
-    return user.is_staff
+
 
 @login_required
 @user_passes_test(admin_check)
@@ -394,20 +418,30 @@ def tag_management(request):
     tags = Tag.objects.all()
     return render(request, 'dashboard/admin/tags.html', {'tags': tags})
 
+
 @login_required
 @user_passes_test(admin_check)
-def add_category(request):
-    if request.method == 'POST':
-        form = CategoryForm(request.POST)
+def edit_category(request, pk):
+    category = get_object_or_404(Category, pk=pk)
+    if request.method == "POST":
+        form = CategoryForm(request.POST, instance=category)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Category added successfully.')
-            return redirect('add_category')  # or use a list view like 'view_all_categories'
+            messages.success(request, "Category updated successfully.")
+            return redirect('category_management')
     else:
-        form = CategoryForm()
-    return render(request, 'dashboard/admin/add_category.html', {'form': form})
+        form = CategoryForm(instance=category)
+    return render(request, 'dashboard/admin/add_category.html', {"form": form, "title": "Edit Category"})
 
-
+@login_required
+@user_passes_test(admin_check)
+def delete_category(request, pk):
+    category = get_object_or_404(Category, pk=pk)
+    if request.method == "POST":
+        category.delete()
+        messages.success(request, "Category deleted successfully.")
+        return redirect('category_management')
+    return render(request, 'dashboard/admin/category_confirm_delete.html', {"category": category})
 @login_required
 @user_passes_test(admin_check)
 def add_tag(request):
