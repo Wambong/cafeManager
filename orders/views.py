@@ -30,7 +30,7 @@ from .models import Item
 from django.core.paginator import Paginator
 
 def home(request):
-    item_list = Item.objects.all().order_by('-id')
+    item_list = Item.objects.all().order_by('id')
     paginator = Paginator(item_list, 16)  # 12 items per page
     page_number = request.GET.get('page')
     items = paginator.get_page(page_number)
