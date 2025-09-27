@@ -23,9 +23,20 @@ from django.db.models import F
 
 def admin_check(user):
     return user.is_staff
+from django.core.paginator import Paginator
+from django.shortcuts import render
+from .models import Item
+
+from django.core.paginator import Paginator
+
 def home(request):
-    items = Item.objects.all()
+    item_list = Item.objects.all().order_by('-id')
+    paginator = Paginator(item_list, 16)  # 12 items per page
+    page_number = request.GET.get('page')
+    items = paginator.get_page(page_number)
     return render(request, 'orders/home.html', {'items': items})
+
+
 def index(request):
     items = Item.objects.all()
     return render(request, 'orders/index.html', {'items': items})
