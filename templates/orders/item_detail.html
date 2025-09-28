@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<div class="container mt-4">
+<div class="container mt-4" style="background-color: #F8FAFC;">
     <div class="card mb-4">
 <div {% if item.image %}
 <div class="zoom-wrapper position-relative w-100 d-flex justify-content-center mb-3" style="z-index: 1;">
@@ -34,9 +34,9 @@
 </div>
 {% endif %}
         <div class="card-body">
-            <h2 class="card-title">{{ item.name }}</h2>
-            <p class="card-text"><strong>Price:</strong> ₽ {{ item.price }}</p>
-             <p class="card-text"><strong>description</strong>  {{ item.body|safe }}</p>
+            <h2 class="card-title"  style="padding-left: 25px; padding-right: 10px;">{{ item.name }}</h2>
+            <p class="card-text"  style="padding-left: 25px; padding-right: 10px;"><strong>Price:</strong> ₽ {{ item.price }}</p>
+             <p class="card-text"  style="padding-left: 25px; padding-right: 10px;"><strong>description</strong>  {{ item.body|safe }}</p>
 
             {% if item.tags.exists %}
                 <p class="card-text">
@@ -46,7 +46,7 @@
                     {% endfor %}
                 </p>
             {% endif %}
-            <div class="rating-star">
+            <div class="rating-star" style="padding-left: 25px;">
                 <span>
                     <i class="fa fa-star{% if item.averageReview < 0.5 %}-o{% elif item.averageReview >= 0.5 and item.averageReview < 1 %}-half-o {% endif %}" aria-hidden="true"></i>
                     <i class="fa fa-star{% if item.averageReview < 1.5 %}-o{% elif item.averageReview >= 1.5 and item.averageReview < 2 %}-half-o {% endif %}" aria-hidden="true"></i>

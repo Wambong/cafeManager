@@ -14,22 +14,55 @@
     align-items: center;
     justify-content: center;
 }
+/*search bar*/
+/* From Uiverse.io by Bodyhc */
+.search {
+  display: inline-block;
+  position: relative;
+}
+
+.search input[type="text"] {
+  width: 200px;
+  padding: 10px;
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.search button[type="submit"] {
+  background-color: #ffffff;
+  border: none;
+  color:  #ffffff;
+  cursor: pointer;
+  padding: 10px 20px;
+  border-radius: 20px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  transition: .9s ease;
+}
+
+.search button[type="submit"]:hover {
+  transform: scale(1.1);
+  color: #ffffff;
+  background-color: #4e99e9;
+}
 
 /* Navbar Styling */
 .navbar {
-    background-color: #AB886D !important;
+    background-color: # #f8f4f1 !important;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .navbar-brand {
-    color: #e6d5c3 !important;
+    color: black !important;
     font-size: 24px;
     font-weight: bold;
 }
 
 .nav-link {
-    color: #e6d5c3 !important;
-    font-weight: 500;
+    color: black !important;
+    font-weight: 800;
     transition: color 0.3s ease;
 }
 
@@ -134,11 +167,12 @@ td {
 
 .card-body {
     padding: 0;
-    background-color: #f8f4f1;
+   /* background-color: #f8f4f1;*/
+   background-color: #F8FAFC;
 }
 .card-body-rating {
     padding: 0;
-    background-color: #f8f4f1;
+    background-color: #F8FAFC;
 }
 
 /* image field */
@@ -342,7 +376,7 @@ label:hover ~ input:checked ~ label{
 .button {
   width: 110px;
   height: 40px;
-  background-image: linear-gradient(rgb(214, 202, 254), rgb(158, 129, 254));
+ background-image: linear-gradient(rgb(214, 202, 254), rgb(158, 129, 254));
   border: none;
   border-radius: 50px;
   color: rgb(255, 255, 255);

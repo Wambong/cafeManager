@@ -22,7 +22,7 @@
         <div class="container-fluid">
 
             <a class="navbar-brand" href="{% url 'home' %}">
-                Home
+             <i class="fa fa-home"></i>
 <!--                <img src="{% static 'images/logo.png' %}" alt="Cafe Logo" height="40">-->
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,12 +32,18 @@
                         <!-- Navbar content -->
             <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
                 <!-- Centered Search Bar -->
-            <form class="d-flex mx-auto" action="{% url 'search' %}" method="get" style="width: 30%;">
-                <input class="form-control me-2 w-100" type="search" placeholder="Search items..." name="q" aria-label="Search">
-                <button class="btn btn-light" type="submit">
-                    <i class="bi bi-search"></i>
-                </button>
-            </form>
+<!--            <form class="d-flex mx-auto" action="{% url 'search' %}" method="get" style="width: 30%;">-->
+<!--                <input class="form-control me-2 w-100" type="search" placeholder="Search items..." name="q" aria-label="Search">-->
+<!--                <button class="btn btn-light" type="submit">-->
+<!--                    <i class="bi bi-search"></i>-->
+<!--                </button>-->
+<!--            </form>-->
+                <!-- From Uiverse.io by Bodyhc -->
+                <form class="search d-flex mx-auto" action="{% url 'search' %}" method="get">
+                    <input placeholder="Search items..." type="text" name="q" aria-label="Search">
+                    <button type="submit"><i class="fa fa-search"></i></button>
+                </form>
+
 
 
 

@@ -3,7 +3,7 @@
 {% block content %}
 
   <div class=" text-center">
-     <h1>  Welcome to iCafe</h1>
+     <h1>  Welcome to <i>e</i>uro<i>S</i>hisha</h1>
   </div>
 
 <div class="container-fluid px-2 mt-5">
@@ -29,8 +29,8 @@
                     </div>
 
                     <div class="card-body">
-                        <h5 class="card-title mb-2">{{ item.name|truncatewords:10 }}</h5>
-                        <span class="text-primary fw-bold" style="font-size: 0.9rem;">₽ {{ item.price }}</span>
+                        <h5 class="card-title mb-2" style="padding-left: 15px; padding-right: 10px;">{{ item.name|truncatewords:10 }}</h5>
+                        <span class="text-primary fw-bold" style="font-size: 1.3rem; padding-left: 15px;">₽ {{ item.price }}</span>
                     </div>
 
                     <!-- Rating -->
